@@ -1,0 +1,24 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- checkout: self
+
+- script: |
+    echo "Listing repo files"
+    ls -R
+  displayName: 'Debug repo structure'
+
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'   # 🔁 change if needed
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'clean package'
