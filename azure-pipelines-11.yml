@@ -1,0 +1,21 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+
+# 🔍 VERY IMPORTANT - Find actual pom.xml location
+- script: |
+    echo "====== DEBUG START ======"
+    pwd
+    ls -R
+    echo "====== DEBUG END ======"
+  displayName: 'Find pom.xml location'
+
+# 🚫 TEMPORARILY DISABLE Maven (until we find correct path)
+# - task: Maven@3
+#   inputs:
+#     mavenPomFile: 'pom.xml'
+#     goals: 'clean package'
