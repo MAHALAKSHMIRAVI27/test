@@ -1,0 +1,33 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+
+# Optional: Debug to find pom.xml
+- script: |
+    echo "Listing files..."
+    ls -R
+  displayName: 'Debug Repo Structure'
+
+# Build and Test
+- task: Maven@3
+  displayName: 'Build and Test with Maven'
+  inputs:
+    mavenPomFile: 'pom.xml'   # ⚠️ change if not in root
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'clean package'
+
+# Publish artifacts
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifacts'
+  inputs:
+    pathToPublish: 'target'
+    artifactName: 'drop'
