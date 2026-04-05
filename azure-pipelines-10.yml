@@ -1,0 +1,32 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+
+# 🔍 Step 1: Find where pom.xml exists
+- script: |
+    echo "Current directory:"
+    pwd
+    echo "Listing all files:"
+    ls -R
+  displayName: 'Find pom.xml'
+
+# ☕ Step 2: Build using Maven (UPDATE PATH AFTER DEBUG)
+- task: Maven@4
+  displayName: 'Build and Test with Maven'
+  inputs:
+    mavenPomFile: 'pom.xml'   # ⚠️ CHANGE THIS after checking logs
+    goals: 'clean package'
+    mavenOptions: '-Xmx3072m'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+
+# 📦 Step 3: Publish artifacts
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifacts'
+  inputs:
+    pathToPublish: 'target'   # ⚠️ CHANGE if pom.xml is in a folder
+    artifactName: 'drop'
