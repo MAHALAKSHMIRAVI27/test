@@ -1,0 +1,32 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'package'
+    mavenOptions: '-Xmx1024m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    testRunTitle: 'Maven Test Results'
+
+    # Code Coverage
+    codeCoverageToolOption: 'JaCoCo'
+    codeCoverageClassFilter: '+:com.example.*'
+    codeCoverageClassFilesDirectories: 'target/classes'
+    codeCoverageSourceDirectories: 'src/main/java'
+    codeCoverageFailIfEmpty: true
+
+    # Advanced
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+
+    # Code Analysis
+    sonarQubeRunAnalysis: false
